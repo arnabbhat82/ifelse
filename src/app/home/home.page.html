@@ -17,4 +17,7 @@
     <div *ngIf="!subdocumentById; else elseBlock">Content to render when condition is true.</div>
     <ng-template #elseBlock>Content to render when condition is false.</ng-template>
   </div>
+  <div class="footer" [style.margin-top]="actualHeight">This is my css block
+    {{ heightinpx }}
+  </div>
 </ion-content>
