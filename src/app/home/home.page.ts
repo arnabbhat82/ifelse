@@ -1,5 +1,9 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChildren } from '@angular/core';
 import { GetdocsService, SubDocumentById } from '../getdocs.service';
+import { AppPasswordDirective } from '../app-password.directive';
+
+declare var require: any;
+const FileSaver = require('file-saver');
 
 @Component({
   selector: 'app-home',
@@ -7,12 +11,25 @@ import { GetdocsService, SubDocumentById } from '../getdocs.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
+  pdfFiles = [
+    {
+      name: 'PDF File One',
+      startPage: 2,
+      path: 'https://storage.googleapis.com/astufoundationlko/sample.pdf'
+    },
+    {
+      name: 'PDF File Two',
+      startPage: 4,
+      path: 'https://storage.googleapis.com/astufoundationlko/sample.pdf'
+    },
+  ];
   subdocumentById: SubDocumentById[] = [];
   screenHeight: any;
   screenWidth: number;
   heightinpx: string;
   actualHeight: string;
 
+  @ViewChildren(AppPasswordDirective) dirs;
   constructor(private authService: GetdocsService) {
     this.getScreenSize();
   }
@@ -23,6 +40,14 @@ export class HomePage implements OnInit {
       this.subdocumentById = responseData;
       console.log(this.subdocumentById);
     });
+  }
+
+  downloadPdf(pdfUrl: string, pdfName: string) {
+    FileSaver.saveAs(pdfUrl, pdfName);
+  }
+
+  openDoc(pdfUrl: string, startPage: number) {
+    window.open(pdfUrl + '#page=' + startPage, '_blank', '', true);
   }
   @HostListener('window:resize', ['$event'])
   getScreenSize(event?) {
